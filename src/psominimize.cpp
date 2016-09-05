@@ -138,15 +138,8 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
 		// necessary as swarmCentre and swarmSpan are not determined taking into account the input design space bounds...
 		for (int i=0; i<spacedim; i++) {
 			p_particle[i] = &(pop[i][particle]);
-			cout << pop[i][particle] << " ";
 		}
 		ok = regenerate_on_boundary(p_particle, spacedim, bounds);
-		cout << "regenerate_on_boundary = " << ok << "-> ";
-		for (int i=0; i<spacedim; i++) {
-			cout << pop[i][particle] << " ";
-		}
-		cout << endl;
-		//////
 	}
 
 
@@ -223,12 +216,13 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
 	// generations/iterations
     for (int gg=0; gg<niterations; gg++) {
 
-    	//cout << "\nIteration : " << gg;
+    	cout << "\nIteration : " << gg;
 
         // particles
         for (int particle=0; particle<nparticles; particle++) {
         	//cout << "\nParticle : " << particle;
 
+        	// GENERATE
         	r1 = double(rand() % 100)/100.0; // random float between 0.00 and 0.99
         	r2 = double(rand() % 100)/100.0; // random float between 0.00 and 0.99
         	for (int i=0; i<spacedim; i++) {
@@ -237,38 +231,31 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
         		// update position
         		pop[i][particle] = pop[i][particle] + vel[i][particle];
         	}
-            /*
-			// and correct it if it is outside the design space
-            position = pop[:,ii]
-            a = uniform()
-            if a >= 0.5:
-                pop[:, ii] = regenerate_on_boundary(position, bounds)
-            else:
-                pop[:, ii] = regenerate_from_swarm_best(position, bounds, zLocal)
-            */
-        	////// IMPORTANT! Check that the initial swarm is inside the design space and regenerate points in case
-        	// necessary as swarmCentre and swarmSpan are not determined taking into account the input design space bounds...
+
+			//// CHECK that the particle is inside the design space (bounds) and regenerate a feasible point in case
+        	// collect position
         	for (int i=0; i<spacedim; i++) {
         		p_particle[i] = &(pop[i][particle]);
-        		cout << pop[i][particle] << " ";
         	}
-        	ok = regenerate_on_boundary(p_particle, spacedim, bounds);
-        	cout << "regenerate_on_boundary = " << ok << "-> ";
-        	for (int i=0; i<spacedim; i++) {
-        		cout << pop[i][particle] << " ";
-        	}
-        	cout << endl;
-        	//////
+            v = rand() % 100 + 1;     // v2 in the range 1 to 100
+            if (v >= 50) {
+                // regenerate on boundary
+        		ok = regenerate_on_boundary(p_particle, spacedim, bounds);
+            } else {
+            	ok=regenerate_from_swarm_best(p_particle, spacedim, nparticles, bounds, zLocal);
+            }
+        	////
 
 
-            // evaluate
+            // EVALUATE
         	for (int i=0; i<spacedim; i++) thisZ[i] = pop[i][particle];
         	out = p_objfun(thisZ, spacedim);
 			yValues[particle]=out;
 
 
 
-            // if performance improved, update single particle and global performance
+            // UPDATE
+			// if performance improved, update single particle and global performance
 			if (yValues[particle]<yLocal[particle]) {
 				// update particle best objective value so far
 				yLocal[particle] = yValues[particle];
@@ -294,6 +281,11 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
 		// end particles loop ---------------------------------------
         }
 
+
+        cout << "\nGlobal best so far: ( ";
+        for (int i=0; i<spacedim; i++) cout << zIncumb[i] << " ";
+        cout << ")   yIncumb=" << yIncumb;
+
 		//wCurr = wCurr*.8   # dynamic reduction of global weight
 
         // average values and termination criterion
@@ -312,7 +304,7 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
     // end iterations (generations) loop ---------------------------------------
     }
 
-    cout << "\nGlobal best: ( ";
+    cout << "\n\nGlobal best: ( ";
     for (int i=0; i<spacedim; i++) cout << zIncumb[i] << " ";
     cout << ")   yIncumb=" << yIncumb;
 

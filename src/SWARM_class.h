@@ -19,10 +19,15 @@ class SWARM {
 	// Population destructor
     ~Swarm(void);
 
+    // variables
 
+
+    // functions
     void Initialise(int);
-
     void Fly(void);
+
+
+
 
 
 };

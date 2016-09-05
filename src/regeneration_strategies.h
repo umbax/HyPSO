@@ -25,9 +25,7 @@
 #ifndef REGENERATION_STRATEGIES_H_
 #define REGENERATION_STRATEGIES_H_
 
-
-int regenerate_on_boundary(double*, int, double*);
 int regenerate_on_boundary(double**, int, double**);
-
+int regenerate_from_swarm_best(double**, int, int, double**, double**);
 
 #endif /* REGENERATION_STRATEGIES_H_ */

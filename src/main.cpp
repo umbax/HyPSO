@@ -38,12 +38,13 @@ int main ()
 
 
 	// inputs - so far only the version for a number of variable > 2 works!
-	int spacedim = 2;
-	double swarmcentre[2] = {2.0, 2.0};
-	double swarmspan[2] = {5.0, 5.0};
+	int spacedim = 2; //1;
+	double swarmcentre[2] = {2.0, 2.0}; // {1.0}; //swarmcentre[2] = {2.0, 2.0};  // for nD design spaces
+	double swarmspan[2] = {5.0, 5.0}; //{5.0}; //swarmspan[2] = {5.0, 5.0};  // for nD design spaces
 	int nparticles = 100;
 	int nsteps = 100;
 	double** bounds=zeros(2,2); // rows corresponds to variable (1st row= 1st variable) - 1st column= lower bound - 2nd column= upper bound
+	// for 1D design spaces, use to rows but only the first row is considered
 	bounds[0][0] = -5.0;
 	bounds[0][1] = 5.0;
 	bounds[1][0] = -5.0;
@@ -51,14 +52,14 @@ int main ()
 
 	// get address of objective function
 	double (*p_objfun)(double*, int);
-	p_objfun = &model;    // model contains the objective function to be minimised (user defined)
+	p_objfun = &Rosenbrock; //&Salustowicz;    // model contains the objective function to be minimised (user defined)
 
 	// launch single PSO search for global minima (function for now)
+	//double** results = new double[]
 	out = psominimize(p_objfun, spacedim, swarmcentre, swarmspan, nparticles, nsteps, bounds);
 
 	cout << "\n\nout = " << out << endl << endl;
 
 }
 
-// thanks to separate linking and use of header files, there is no need to include source files (.cpp)!!
 

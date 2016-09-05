@@ -9,6 +9,11 @@
 
 
 double model (double*, int);
+
+// 1D test functions
+double Salustowicz(double*, int);
+
+// 2D test functions
 double Rosenbrock(double*, int);
 double Ackley(double*, int);
 

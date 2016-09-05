@@ -9,6 +9,7 @@
 #define E (2.7182818284590452353602874713526624977572470937L)
 
 
+// user-defined function
 double model(double* x, int spacedim)
 {
 	double f;
@@ -22,17 +23,31 @@ double model(double* x, int spacedim)
 	return f;
 }
 
+// 1D test function
+double Salustowicz(double* x, int spacedim)
+{
+	double f;
+	// trick: array (2x1) still used, but only the variable in the first entry in considered!
+	double v = x[0];
+	// Salustowicz - global minimum: about -0.8 in v=4 | bounds 0 <= v <= 10
+	f = exp(-v)*pow(v,3.0)*cos(v)*sin(v)*(cos(v)*pow(sin(v),2.0)-1.0);
 
+	return f;
+}
+
+
+// 2D test function
 double Rosenbrock(double* x, int spacedim)
 {
 	double f;
-	// Rosenbrock (global minimum: 0 in 1,1)
+	// Rosenbrock - global minimum: 0 in (1,1) | bounds -5 <= xi <= 5
 	f = 100*(x[0]-x[1]*x[1])*(x[0]-x[1]*x[1])+(1-x[1])*(1-x[1]);
 
 	return f;
 }
 
 
+// 2D test function
 double Ackley(double* x, int spacedim)
 {
 	double f;
