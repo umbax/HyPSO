@@ -4,7 +4,7 @@ C++ Particle Swarm Optimisation code - finds the global minimum/a of a user-defi
 Features:
 - single minimisation objective (cost function)
 - design space bounds defined by the user 
-- no constraints on dependent variables implemented yet
+- no constraints on dependent variables implemented yet (work in progress to implement multiobjective optimisation)
 
 Inputs (provided by the user):
 - minimisation objective (cost function) (in Model.cpp)
