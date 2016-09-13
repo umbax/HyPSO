@@ -24,7 +24,7 @@ using namespace std;
 
 #include <iostream>
 
-#include "model.h"
+#include "model.h"	// contains the definition of the function whose minimum has to be found
 #include "psominimize.h"
 #include "matrix_operations.h"
 
@@ -33,18 +33,16 @@ int main ()
 {
 	cout << "\n\n HyPSO first experiments\n" << endl;
 
-	// set initial values of ?
-	int out = .0;
+	int out = 0;
 
 
-	// inputs - so far only the version for a number of variable > 2 works!
+	// input parameters
 	int spacedim = 2; //1;
+	int nparticles = 100;
+	int nsteps = 150;
 	double swarmcentre[2] = {2.0, 2.0}; // {1.0}; //swarmcentre[2] = {2.0, 2.0};  // for nD design spaces
 	double swarmspan[2] = {5.0, 5.0}; //{5.0}; //swarmspan[2] = {5.0, 5.0};  // for nD design spaces
-	int nparticles = 100;
-	int nsteps = 100;
 	double** bounds=zeros(2,2); // rows corresponds to variable (1st row= 1st variable) - 1st column= lower bound - 2nd column= upper bound
-	// for 1D design spaces, use to rows but only the first row is considered
 	bounds[0][0] = -5.0;
 	bounds[0][1] = 5.0;
 	bounds[1][0] = -5.0;
@@ -52,13 +50,25 @@ int main ()
 
 	// get address of objective function
 	double (*p_objfun)(double*, int);
-	p_objfun = &Rosenbrock; //&Salustowicz;    // model contains the objective function to be minimised (user defined)
+	p_objfun = &Ackley; //&Rosenbrock; //&Salustowicz;    // model contains the objective function to be minimised (user defined)
+
+	// optimisation output container (just an array fow now, easier to integrate into preexisting code)
+	double* results = zeros(spacedim+1);  // minimum coordinates [spacedim], value of the function at minimum [1],
 
 	// launch single PSO search for global minima (function for now)
-	//double** results = new double[]
-	out = psominimize(p_objfun, spacedim, swarmcentre, swarmspan, nparticles, nsteps, bounds);
+	out = psominimize(p_objfun, spacedim, swarmcentre, swarmspan, nparticles, nsteps, bounds, results);
 
-	cout << "\n\nout = " << out << endl << endl;
+	// checks and output
+	if (out==1) {
+		cout << "\n\nOK, psominimize executed correctly.";
+		cout << "\nCoordinates of global minimum: ( ";
+		for (int i=0; i<spacedim; i++) cout << results[i] << " ";
+		cout << ")   Function at global minimum=" << results[spacedim];
+	} else {
+		cout << "\nERROR in psominimize!";
+	}
+
+	cout << endl << endl;
 
 }
 

@@ -39,13 +39,14 @@ Inputs:
 - nparticles  	number of particles
 - nsteps      	number of generations
 - bounds      	array with lower and upper bounds for each variable (spacedim x 2)
-Outputs:
+- results		array where results are saved (spacedim+1)
+Outputs assigned to array passed by reference:
 - zIncumb  position of the global optimal point (minimum)
 - yIncumb  value of the objective function at the global minimum point found zIncumb
-- function_output_Incumb value of the metamodel (NOT the objective function) at zIncumb
-- constraints_output_Incumb  array containing the values of the output constraints at the found optimum
+- NOT YET: function_output_Incumb value of the metamodel (NOT the objective function) at zIncumb
+- NOT YET: constraints_output_Incumb  array containing the values of the output constraints at the found optimum
 */
-int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcentre, double* swarmspan, int nparticles, int niterations, double** bounds)
+int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcentre, double* swarmspan, int nparticles, int niterations, double** bounds, double* results)
 {
 	// check input
 	cout << "\npsominimize" << endl;
@@ -87,16 +88,18 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
 	double** pop;		// matrix of particles' positions - matrix (spacedim x nparticles)
 	double** vel;		// matrix of particles' velocities - matrix (spacedim x nparticles)
 	double* yValues;	// objective function value associated to a particle - array (1xnparticles)
-	double* yLocal;		// best objective values obtained by each particle (particle/personal bests) - array (1 x nparticles)
-	double yIncumb;		// global best objective value - scalar
+
 	double** zLocal;	// archive storing the position of particles personal best  - matrix (spacedim x nparticles)
+	double* yLocal;		// best objective values obtained by each particle (particle/personal bests) - array (1 x nparticles)
 	double* zIncumb;	// archive storing position of the particle that corresponds to the global best value of objective function
+	double yIncumb;		// global best objective value - scalar
 
 	double* function_output_Local; // value of the metamodel at the local (particle) minimum of the objective function in the design space
 	double function_output_Incumb; // value of the metamodel at the global minimum (best among particles) of the objective function in the design space
 
 	double* constraints_output_Local; // array of scalars for now - values of constraints at particle best position - matrix (nparticles x n_constraints=1)
 	double constraints_output_Incumb; // scalar for now - values of constraints at global best position - array (1 x n_constraints)
+
 
 	double* thisZ=zeros(spacedim);	// coordinates of current particle, dynamically initialised to a vector of zeros
 	double** p_particle=new double*[spacedim]; // array of addresses of particle coordinates (used to modify/correct pop[][])
@@ -311,8 +314,12 @@ int psominimize(double (*p_objfun)(double*, int), int spacedim, double* swarmcen
 	// free all dynamically allocated variables (pop, vel, yValues, ..)
 
 
-	// return design point, corresponding output
-    // return zIncumb, yIncumb, function_output_Incumb, constraints_output_Incumb;
+	// store minimum position and corresponding function output in results
+    for (int i=0; i<spacedim; i++) results[i]=zIncumb[i];
+    results[spacedim]=yIncumb;
+
+    // ADD LATER ON: function_output_Incumb, constraints_output_Incumb;
+
     return 1;
 
 }

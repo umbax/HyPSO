@@ -24,7 +24,7 @@
 #define PSOMINIMIZE_H_
 
 
-int psominimize(double (*)(double*, int), int, double*, double*, int, int, double**);
+int psominimize(double (*)(double*, int), int, double*, double*, int, int, double**, double*);
 
 
 #endif /* PSOMINIMIZE_H_ */

@@ -195,15 +195,20 @@ int main ()
 	bounds=zeros(1,2); // rows corresponds to variable (1st row= 1st variable) - 1st column= lower bound - 2nd column= upper bound
 	bounds[0][0] = 0.0;
 	bounds[0][1] = 10.0;
+	// results container
+	double* results = zeros(spacedim+1);
 	// get address of objective function
 	double (*p_objfun)(double*, int);
 	p_objfun = &Salustowicz;    // model contains the objective function to be minimised (user defined)
 	// launch single PSO search for global minima (function for now)
-	out = psominimize(p_objfun, spacedim, swarmcentre, swarmspan, nparticles, nsteps, bounds);
+	out = psominimize(p_objfun, spacedim, swarmcentre, swarmspan, nparticles, nsteps, bounds, results);
 	cout << "\nout = " << out << endl;
-	if (ok)
+	if (ok) {
 		cout << "\nOK";
-	else {
+		cout << "\n\nCoordinates of global minimum: ( ";
+		for (int i=0; i<spacedim; i++) cout << results[i] << " ";
+		cout << ")   Function at global minimum=" << results[spacedim];
+	} else {
 		cout << "\nERROR!";
 		nerrors++;
 	}
